@@ -331,6 +331,13 @@
         </p>
         <button id="dismissError" class="btn btn-secondary mt-2 py-1 px-2 text-xs">Dismiss</button>
       </div>
+      
+      <!-- Debug Console for Mobile -->
+      <div id="debugConsole" class="card p-3 mb-3 bg-blue-600 bg-opacity-20 border-blue-400" style="display: none;">
+        <h3 class="text-sm text-blue-200 font-bold mb-2">Debug Info:</h3>
+        <div id="debugLog" class="text-xs text-blue-100 font-mono max-h-32 overflow-y-auto"></div>
+        <button id="toggleDebug" class="btn btn-secondary mt-2 py-1 px-2 text-xs">Hide Debug</button>
+      </div>
     </header>
 
     <!-- Waveform Section -->
@@ -599,29 +606,38 @@ function ensureCtx() {
 }
 
 function initAudioContext() {
-  if (audioContextInitialized) return true;
+  debugLog('initAudioContext() called');
+  
+  if (audioContextInitialized) {
+    debugLog('Audio context already initialized');
+    return Promise.resolve(true);
+  }
   
   try {
     ensureCtx();
+    debugLog(`Audio context state: ${ctx.state}`);
     
     // Check if context needs user gesture to resume
     if (ctx.state === 'suspended') {
+      debugLog('Attempting to resume audio context...');
       return ctx.resume().then(() => {
         audioContextInitialized = true;
         hideAudioContextAlert();
+        debugLog('Audio context resumed successfully');
         return true;
       }).catch(err => {
-        console.log('Audio context resume failed:', err);
+        debugLog(`Audio context resume failed: ${err.message}`);
         showAudioContextAlert();
         return false;
       });
     } else {
       audioContextInitialized = true;
       hideAudioContextAlert();
+      debugLog('Audio context ready');
       return Promise.resolve(true);
     }
   } catch (err) {
-    console.log('Audio context creation failed:', err);
+    debugLog(`Audio context creation failed: ${err.message}`);
     showAudioContextAlert();
     return Promise.resolve(false);
   }
@@ -654,6 +670,32 @@ function showError(message) {
 function hideError() {
   const errorAlert = document.getElementById('errorAlert');
   if (errorAlert) errorAlert.style.display = 'none';
+}
+
+// Debug logging for mobile
+function debugLog(message) {
+  console.log(message);
+  const debugLogEl = document.getElementById('debugLog');
+  if (debugLogEl) {
+    const timestamp = new Date().toLocaleTimeString();
+    debugLogEl.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+    debugLogEl.scrollTop = debugLogEl.scrollHeight;
+  }
+}
+
+function showDebugConsole() {
+  const debugConsole = document.getElementById('debugConsole');
+  if (debugConsole) {
+    debugConsole.style.display = 'block';
+    debugLog('Debug console activated');
+    debugLog(`User Agent: ${navigator.userAgent}`);
+    debugLog(`iOS Safari: ${/iPad|iPhone|iPod/.test(navigator.userAgent)}`);
+  }
+}
+
+function hideDebugConsole() {
+  const debugConsole = document.getElementById('debugConsole');
+  if (debugConsole) debugConsole.style.display = 'none';
 }
 
 function ensureGraph() {
@@ -750,33 +792,46 @@ async function playRadio(idx = null) {
 }
 
 async function toggleRadio() {
+  debugLog('toggleRadio() called');
+  
   // First ensure audio context is initialized
   const audioReady = await initAudioContext();
   if (!audioReady) {
+    debugLog('Audio context not ready');
     showAudioContextAlert();
     return;
   }
 
+  debugLog(`Current radioPlaying state: ${radioPlaying}`);
+
   if (radioPlaying) {
+    debugLog('Stopping radio');
     // Mute the radio
     radioEl.volume = 0;
     radioPlaying = false;
     btnToggleRadio.textContent = 'Start Radio';
     btnToggleRadio.className = 'btn btn-secondary flex-1 sm:w-32 py-2 text-sm';
   } else {
+    debugLog('Starting radio');
     // Unmute the radio
     if (radioEl.src) {
+      debugLog('Radio source exists, unmuting');
       // If we have a station loaded, just unmute it
       radioEl.volume = 1;
       radioPlaying = true;
       btnToggleRadio.textContent = 'Mute Radio';
       btnToggleRadio.className = 'btn btn-primary flex-1 sm:w-32 py-2 text-sm';
     } else {
+      debugLog('No radio source, starting random station');
       // If no station is loaded, start a random one
-      await playRandomStation();
-      radioPlaying = true;
-      btnToggleRadio.textContent = 'Mute Radio';
-      btnToggleRadio.className = 'btn btn-primary flex-1 sm:w-32 py-2 text-sm';
+      try {
+        await playRandomStation();
+        radioPlaying = true;
+        btnToggleRadio.textContent = 'Mute Radio';
+        btnToggleRadio.className = 'btn btn-primary flex-1 sm:w-32 py-2 text-sm';
+      } catch (error) {
+        debugLog(`Failed to start random station: ${error.message}`);
+      }
     }
   }
 }
@@ -1253,15 +1308,75 @@ async function playRandomStation() {
 }
 
 /* ------------------ UI wiring ------------------ */
-btnToggleRadio.addEventListener('click', toggleRadio);
-btnRandom    .addEventListener('click', playRandomStation);
+// iOS Safari requires more explicit event handling
+function setupButtonEvents() {
+  debugLog('Setting up button events');
+  
+  // Radio buttons
+  btnToggleRadio.addEventListener('click', (e) => {
+    e.preventDefault();
+    debugLog('Radio toggle button clicked');
+    toggleRadio();
+  });
+  
+  btnToggleRadio.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    debugLog('Radio toggle button touched');
+    toggleRadio();
+  });
+  
+  btnRandom.addEventListener('click', (e) => {
+    e.preventDefault();
+    debugLog('Random station button clicked');
+    playRandomStation();
+  });
+  
+  btnRandom.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    debugLog('Random station button touched');
+    playRandomStation();
+  });
+}
 
-btnToggleRec.addEventListener('click', toggleRecording);
-btnToggleLoop.addEventListener('click', async ()=>{ 
-  const audioReady = await initAudioContext();
-  if (audioReady) toggleLoop(); 
-});
-btnClear   .addEventListener('click', clearLoop);
+  // Recording button
+  btnToggleRec.addEventListener('click', (e) => {
+    e.preventDefault();
+    debugLog('Recording button clicked');
+    toggleRecording();
+  });
+  
+  btnToggleRec.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    debugLog('Recording button touched');
+    toggleRecording();
+  });
+  
+  // Loop buttons
+  btnToggleLoop.addEventListener('click', async (e) => {
+    e.preventDefault();
+    debugLog('Loop toggle button clicked');
+    const audioReady = await initAudioContext();
+    if (audioReady) toggleLoop(); 
+  });
+  
+  btnToggleLoop.addEventListener('touchend', async (e) => {
+    e.preventDefault();
+    debugLog('Loop toggle button touched');
+    const audioReady = await initAudioContext();
+    if (audioReady) toggleLoop();
+  });
+  
+  btnClear.addEventListener('click', (e) => {
+    e.preventDefault();
+    debugLog('Clear button clicked');
+    clearLoop();
+  });
+  
+  btnClear.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    debugLog('Clear button touched');
+    clearLoop();
+  });
 
 let loopBtnState = false;
 btnToggleLoopMode.addEventListener('click', ()=>{
@@ -1537,14 +1652,20 @@ function init(){
   createStepGrid();
   render();
   
-  // Show audio context alert on mobile initially
+  // Setup button events
+  setupButtonEvents();
+  
+  // Show debug console on mobile for troubleshooting
   if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    showDebugConsole();
     showAudioContextAlert();
+    debugLog('Mobile device detected');
   }
   
   // Add universal button handler for audio context initialization
   document.addEventListener('click', async (e) => {
     if (e.target.matches('button, .btn')) {
+      debugLog(`Button clicked: ${e.target.textContent}`);
       await initAudioContext();
     }
   });
@@ -1552,6 +1673,7 @@ function init(){
   // Add touch event support for mobile
   document.addEventListener('touchstart', async (e) => {
     if (e.target.matches('button, .btn')) {
+      debugLog(`Button touched: ${e.target.textContent}`);
       await initAudioContext();
     }
   });
@@ -1560,6 +1682,21 @@ function init(){
   const dismissButton = document.getElementById('dismissError');
   if (dismissButton) {
     dismissButton.addEventListener('click', hideError);
+  }
+  
+  // Debug toggle button handler
+  const toggleDebugButton = document.getElementById('toggleDebug');
+  if (toggleDebugButton) {
+    toggleDebugButton.addEventListener('click', () => {
+      const debugConsole = document.getElementById('debugConsole');
+      if (debugConsole.style.display === 'none') {
+        showDebugConsole();
+        toggleDebugButton.textContent = 'Hide Debug';
+      } else {
+        hideDebugConsole();
+        toggleDebugButton.textContent = 'Show Debug';
+      }
+    });
   }
 }
 init();
