@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>👻 Phantom Radio — Looper (Markers)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* Apple-style design system */
+  body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Mobile optimizations */
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  /* Mobile-first responsive design */
+  @media (max-width: 768px) {
+    .mobile-stack {
+      flex-direction: column !important;
+    }
+    
+    .mobile-full {
+      width: 100% !important;
+    }
+    
+    .mobile-large-touch {
+      min-height: 44px !important;
+      min-width: 44px !important;
+      padding: 12px !important;
+    }
+  }
+  
+  /* Frosted glass effect for cards */
+  .card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Apple-style buttons */
+  .btn {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: #ffffff;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    /* Mobile touch optimizations */
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .btn:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:active {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+  }
+  
+  /* Primary action buttons (white) */
+  .btn-primary {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: #000000;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-primary:active {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  }
+  
+  /* Secondary buttons (subtle) */
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .btn-secondary:active {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  /* Active state buttons */
+  .btn-active {
+    background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+    color: #ffffff;
+    border: none;
+  }
+  
+  .btn-active:hover {
+    background: linear-gradient(135deg, #0056CC 0%, #004499 100%);
+  }
+  
+  .btn-active:active {
+    background: linear-gradient(135deg, #004499 0%, #003366 100%);
+  }
+  
+  /* Status indicators */
+  .status-indicator {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  
+  .status-idle {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .status-active {
+    background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+    color: #ffffff;
+    border: none;
+  }
+  
+  .status-recording {
+    background: linear-gradient(135deg, #FF3B30 0%, #D70015 100%);
+    color: #ffffff;
+    border: none;
+    animation: pulse 2s infinite;
+  }
+  
+  .status-playing {
+    background: linear-gradient(135deg, #34C759 0%, #28A745 100%);
+    color: #ffffff;
+    border: none;
+  }
+  
+  /* Pills */
+  .pill {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+  }
+  
+  /* Canvas styling */
+  canvas {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  /* Section titles */
+  .section-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.025em;
+  }
+  
+  .section-title.text-base {
+    font-size: 1rem;
+  }
+  
+  /* Sliders */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    height: 6px;
+    outline: none;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Text colors */
+  .text-gray-400 {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+  
+  .text-gray-300 {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+  
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+  
+  /* Step grid styling */
+  .step-grid {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 120px;
+  }
+  
+  .step-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    min-height: 48px;
+    /* Mobile touch optimizations */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  
+  @media (max-width: 768px) {
+    .step-item {
+      min-height: 56px !important;
+      min-width: 56px !important;
+    }
+  }
+  
+  .step-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .step-item.active {
+    background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+    border-color: #007AFF;
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+  }
+  
+  .step-item.playing {
+    background: linear-gradient(135deg, #34C759 0%, #28A745 100%);
+    border-color: #34C759;
+    box-shadow: 0 4px 16px rgba(52, 199, 89, 0.4);
+    animation: pulse 0.5s ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* Level meter */
+  .level-meter {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .level-fill {
+    background: linear-gradient(90deg, #34C759 0%, #007AFF 50%, #FF3B30 100%);
+    border-radius: 12px;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(52, 199, 89, 0.3);
+  }
+</style>
+</head>
+<body>
+  <div class="max-w-6xl mx-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
+    <header class="text-center mb-2 sm:mb-4">
+      <h1 class="text-xl sm:text-2xl font-extrabold tracking-wide text-white mb-1">👻 Phantom Radio</h1>
+      <!-- Audio Context Initialization Alert -->
+      <div id="audioContextAlert" class="card p-3 mb-3 bg-yellow-600 bg-opacity-20 border-yellow-400" style="display: none;">
+        <p class="text-sm text-yellow-200">
+          🎵 Tap any button to enable audio on this device
+        </p>
+      </div>
+      
+      <!-- Error Messages -->
+      <div id="errorAlert" class="card p-3 mb-3 bg-red-600 bg-opacity-20 border-red-400" style="display: none;">
+        <p class="text-sm text-red-200" id="errorMessage">
+          ⚠️ Audio error occurred
+        </p>
+        <button id="dismissError" class="btn btn-secondary mt-2 py-1 px-2 text-xs">Dismiss</button>
+      </div>
+    </header>
+
+    <!-- Waveform Section -->
+    <section class="card p-3 sm:p-4 space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+        <h2 class="section-title text-lg">Looper</h2>
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          <span class="text-sm text-gray-400">Level:</span>
+          <div class="w-24 sm:w-32 h-2 level-meter">
+            <i id="level" class="block h-2 w-0 level-fill"></i>
+          </div>
+          <span id="recStatus" class="status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm">idle</span>
+          <span id="loopStatus" class="status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm">empty</span>
+          <span class="pill px-2 sm:px-3 py-1 text-xs sm:text-sm">Length: <span id="elapsed" class="ml-1">0.00s</span></span>
+        </div>
+      </div>
+      
+      <!-- Radio Controls -->
+      <div class="space-y-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="text-sm text-gray-400 font-medium">Radio:</span>
+          <div class="flex gap-2">
+            <button id="btnToggleRadio" class="btn btn-primary flex-1 sm:w-32 py-2 text-sm">Start Radio</button>
+            <button id="btnRandom" class="btn btn-primary flex-1 sm:w-28 py-2 text-sm">Change Station</button>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="text-sm text-gray-400 font-medium">Record:</span>
+          <button id="btnToggleRec" class="btn btn-primary w-full sm:w-32 py-2 text-sm">Start Recording</button>
+        </div>
+      </div>
+      
+      <canvas id="wave" class="w-full h-24 rounded-lg"></canvas>
+      
+      <!-- Loop Controls -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-3">
+        <button id="btnToggleLoop" class="btn btn-secondary py-2 text-sm">Play</button>
+        <button id="btnToggleLoopMode" class="btn btn-primary py-2 text-sm">Loop: On</button>
+        <button id="btnClear" class="btn btn-secondary py-2 text-sm">Clear</button>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-400">Speed:</span>
+        <span class="pill px-3 py-1 text-sm">Speed: <span id="speedVal" class="ml-1">1.00×</span></span>
+        <input id="speed" type="range" min="0.1" max="2" step="0.05" value="1" class="flex-1">
+      </div>
+      
+      <p class="text-gray-400 text-sm text-center">Drag the <span class="text-white font-semibold">white</span> start and <span class="text-gray-300 font-semibold">gray</span> end markers to set loop range</p>
+      
+      <audio id="radioEl" crossorigin="anonymous"></audio>
+    </section>
+
+    <!-- Step Sequencer -->
+    <section class="card p-3 sm:p-4 space-y-3 sm:space-y-4">
+      <!-- Header with prominent BPM display -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+        <h2 class="section-title text-lg">Sequencer</h2>
+        <div class="flex items-center gap-2 sm:gap-4">
+          <div class="text-center">
+            <div class="text-xl sm:text-2xl font-bold text-white" id="bpmVal">120</div>
+            <div class="text-xs text-gray-400">BPM</div>
+          </div>
+          <span class="pill px-2 sm:px-3 py-1 text-xs sm:text-sm"><b>Steps:</b> <span id="stepCount" class="ml-1">8</span></span>
+        </div>
+      </div>
+      
+      <!-- Main Controls with better organization -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <span class="text-sm text-gray-400 font-medium">Controls:</span>
+        <div class="flex gap-2">
+          <button id="btnToggleSequencer" class="btn btn-primary flex-1 sm:w-20 py-2 text-sm font-medium">Play</button>
+          <button id="btnTapTempo" class="btn btn-secondary flex-1 sm:w-16 py-2 text-sm font-medium">Tap</button>
+        </div>
+      </div>
+      
+      <!-- Enhanced Sliders with better labels -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-sm text-gray-400 font-medium">Steps</label>
+            <span class="text-xs text-gray-500" id="stepCountDisplay">8</span>
+          </div>
+          <input id="stepSlider" type="range" min="4" max="16" step="1" value="8" class="w-full">
+        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-sm text-gray-400 font-medium">BPM</label>
+            <span class="text-xs text-gray-500" id="bpmDisplay">120</span>
+          </div>
+          <input id="bpmSlider" type="range" min="60" max="200" step="5" value="120" class="w-full">
+        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-sm text-gray-400 font-medium">Length</label>
+            <span class="text-xs text-gray-500" id="stepLengthDisplay">0.20s</span>
+          </div>
+          <input id="stepLengthSlider" type="range" min="0.01" max="0.5" step="0.01" value="0.2" class="w-full">
+        </div>
+      </div>
+      
+      <!-- Enhanced Step Grid -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-gray-400 font-medium">Pattern</span>
+          <div class="flex items-center gap-3 text-sm text-gray-400">
+            <span>Active: <span id="activeStepCount" class="text-white font-semibold">0</span></span>
+            <span>Length: <span id="patternLength" class="text-white font-semibold">0.00s</span></span>
+            <span>Step: <span id="stepLengthVal" class="text-white font-semibold">0.20s</span></span>
+          </div>
+        </div>
+        <div class="step-grid p-4" id="stepGrid">
+          <!-- Steps will be populated by JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Enhanced Action Buttons -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <span class="text-sm text-gray-400 font-medium">Actions:</span>
+        <div class="grid grid-cols-2 sm:flex gap-2">
+          <button id="btnRandomizeSteps" class="btn btn-primary py-2 px-3 text-sm font-medium">Random</button>
+          <button id="btnClearSteps" class="btn btn-secondary py-2 px-3 text-sm font-medium">Clear</button>
+          <button id="btnFillSteps" class="btn btn-primary py-2 px-3 text-sm font-medium">Fill</button>
+          <button id="btnInvertSteps" class="btn btn-primary py-2 px-3 text-sm font-medium">Invert</button>
+          <button id="btnPresetPolyrhythm" class="btn btn-secondary py-2 px-3 text-sm font-medium col-span-2 sm:col-span-1">Poly</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+/* ------------------ Enhanced Stations ------------------ */
+const STATIONS = [
+  // Radio Paradise
+  {name:"Radio Paradise — Main (AAC 320)", url:"https://stream.radioparadise.com/aac-320", category:"Radio Paradise"},
+  {name:"Radio Paradise — Mellow",        url:"https://stream.radioparadise.com/mellow-320", category:"Radio Paradise"},
+  {name:"Radio Paradise — Rock",          url:"https://stream.radioparadise.com/rock-320", category:"Radio Paradise"},
+  {name:"Radio Paradise — World/Etc",     url:"https://stream.radioparadise.com/world-etc-320", category:"Radio Paradise"},
+  
+  // SomaFM
+  {name:"SomaFM — Groove Salad",          url:"https://ice6.somafm.com/groovesalad-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Lush",                  url:"https://ice6.somafm.com/lush-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Secret Agent",          url:"https://ice6.somafm.com/secretagent-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Drone Zone",            url:"https://ice6.somafm.com/dronezone-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Deep Space One",        url:"https://ice1.somafm.com/deepspaceone-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Groove Salad Classic",  url:"https://ice6.somafm.com/gsclassic-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Beat Blender",          url:"https://ice6.somafm.com/beatblender-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — DEF CON",               url:"https://ice6.somafm.com/defcon-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Suburbs of Goa",        url:"https://ice6.somafm.com/suburbsofgoa-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — Synphaera Radio",       url:"https://ice6.somafm.com/synphaera-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — The Trip",              url:"https://ice6.somafm.com/thetrip-128-mp3", category:"SomaFM"},
+  {name:"SomaFM — ThistleRadio",          url:"https://ice6.somafm.com/thistle-128-mp3", category:"SomaFM"},
+  
+  // NTS Radio
+  {name:"NTS Radio — Live",               url:"https://stream-relay-geo.ntslive.net/stream", category:"NTS"},
+  {name:"NTS Radio — 1",                  url:"https://stream-relay-geo.ntslive.net/stream1", category:"NTS"},
+  {name:"NTS Radio — 2",                  url:"https://stream-relay-geo.ntslive.net/stream2", category:"NTS"},
+  
+  // BBC Radio
+  {name:"BBC Radio 1",                    url:"https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one", category:"BBC"},
+  {name:"BBC Radio 2",                    url:"https://stream.live.vc.bbcmedia.co.uk/bbc_radio_two", category:"BBC"},
+  {name:"BBC Radio 3",                    url:"https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three", category:"BBC"},
+  {name:"BBC Radio 6 Music",              url:"https://stream.live.vc.bbcmedia.co.uk/bbc_6music", category:"BBC"},
+  
+  // KEXP
+  {name:"KEXP — Seattle",                 url:"https://kexp.streamguys1.com/kexp160.aac", category:"KEXP"},
+  
+  // FIP
+  {name:"FIP — Paris",                    url:"https://icecast.radiofrance.fr/fip-midfi.mp3", category:"FIP"}
+];
+
+/* ------------------ Elements ------------------ */
+const radioEl     = document.getElementById('radioEl');
+const levelEl     = document.getElementById('level');
+
+const btnToggleRadio = document.getElementById('btnToggleRadio');
+const btnRandom     = document.getElementById('btnRandom');
+
+const btnToggleRec = document.getElementById('btnToggleRec');
+const recStatus   = document.getElementById('recStatus');
+const elapsedEl   = document.getElementById('elapsed');
+
+const btnToggleLoop = document.getElementById('btnToggleLoop');
+const btnClear    = document.getElementById('btnClear');
+const loopStatus  = document.getElementById('loopStatus');
+const btnToggleLoopMode = document.getElementById('btnToggleLoopMode');
+
+const speed   = document.getElementById('speed');
+const speedVal= document.getElementById('speedVal');
+
+// Step Sequencer Elements
+const stepGrid = document.getElementById('stepGrid');
+const stepCount = document.getElementById('stepCount');
+const bpmVal = document.getElementById('bpmVal');
+const stepSlider = document.getElementById('stepSlider');
+const bpmSlider = document.getElementById('bpmSlider');
+const btnToggleSequencer = document.getElementById('btnToggleSequencer');
+const btnRandomizeSteps = document.getElementById('btnRandomizeSteps');
+const btnClearSteps = document.getElementById('btnClearSteps');
+
+// New sequencer elements
+const btnTapTempo = document.getElementById('btnTapTempo');
+const stepLengthSlider = document.getElementById('stepLengthSlider');
+const stepLengthVal = document.getElementById('stepLengthVal');
+const activeStepCount = document.getElementById('activeStepCount');
+const patternLength = document.getElementById('patternLength');
+const btnFillSteps = document.getElementById('btnFillSteps');
+const btnInvertSteps = document.getElementById('btnInvertSteps');
+const btnPresetPolyrhythm = document.getElementById('btnPresetPolyrhythm');
+
+const waveCanvas = document.getElementById('wave');
+const wctx = waveCanvas.getContext('2d');
+function fitCanvas() {
+  waveCanvas.width  = waveCanvas.clientWidth  * devicePixelRatio;
+  waveCanvas.height = waveCanvas.clientHeight * devicePixelRatio;
+}
+fitCanvas();
+addEventListener('resize', fitCanvas);
+
+/* ------------------ Audio graph ------------------ */
+let ctx, srcNode, analyser;
+let procNode, sinkGain;
+
+let currentIdx = 0;
+let recording = false;
+let radioPlaying = false;
+let loopPlaying = false;
+
+let maxSeconds = 10;
+let maxSamples = 0;
+let monoBuffer;     // Float32Array of maxSamples (record target)
+let writeIndex = 0;
+let totalWritten = 0;
+
+let loopBuffer = null;   // AudioBuffer of finalized take
+let loopSource = null;
+let loopStartTime = 0;
+let loopOffset = 0;
+
+let loopModeOn = true;  // Loop toggle (On/Off) - default to On
+let startNorm = 0.0;     // draggable markers (normalized 0..1)
+let endNorm   = 1.0;
+const MIN_GAP = 0.01;    // 1% minimum distance
+
+/* ------------------ Step Sequencer ------------------ */
+let sequencerSteps = 8;
+let sequencerBPM = 120;
+let sequencerPlaying = false;
+let sequencerPattern = [];  // Array of step objects: {active: bool, startPos: float, length: float}
+let sequencerInterval = null;
+let currentStep = 0;
+let sequencerSources = [];  // Array of active audio sources
+let sequencerPlayheadPos = 0;  // Current playhead position for sequencer
+
+// Tap tempo variables
+let tapTimes = [];
+let lastTapTime = 0;
+let audioContextInitialized = false;
+
+function ensureCtx() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    maxSamples = Math.floor(maxSeconds * ctx.sampleRate);
+    monoBuffer = new Float32Array(maxSamples);
+  }
+  return ctx;
+}
+
+function initAudioContext() {
+  if (audioContextInitialized) return true;
+  
+  try {
+    ensureCtx();
+    
+    // Check if context needs user gesture to resume
+    if (ctx.state === 'suspended') {
+      return ctx.resume().then(() => {
+        audioContextInitialized = true;
+        hideAudioContextAlert();
+        return true;
+      }).catch(err => {
+        console.log('Audio context resume failed:', err);
+        showAudioContextAlert();
+        return false;
+      });
+    } else {
+      audioContextInitialized = true;
+      hideAudioContextAlert();
+      return Promise.resolve(true);
+    }
+  } catch (err) {
+    console.log('Audio context creation failed:', err);
+    showAudioContextAlert();
+    return Promise.resolve(false);
+  }
+}
+
+function showAudioContextAlert() {
+  const alert = document.getElementById('audioContextAlert');
+  if (alert) alert.style.display = 'block';
+}
+
+function hideAudioContextAlert() {
+  const alert = document.getElementById('audioContextAlert');
+  if (alert) alert.style.display = 'none';
+}
+
+function showError(message) {
+  const errorAlert = document.getElementById('errorAlert');
+  const errorMessage = document.getElementById('errorMessage');
+  if (errorAlert && errorMessage) {
+    errorMessage.textContent = `⚠️ ${message}`;
+    errorAlert.style.display = 'block';
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      hideError();
+    }, 5000);
+  }
+}
+
+function hideError() {
+  const errorAlert = document.getElementById('errorAlert');
+  if (errorAlert) errorAlert.style.display = 'none';
+}
+
+function ensureGraph() {
+  ensureCtx();
+  if (!srcNode) {
+    srcNode = ctx.createMediaElementSource(radioEl);
+
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 2048;
+
+    // monitor to speakers
+    srcNode.connect(analyser);
+    analyser.connect(ctx.destination);
+
+    // recording capture path from radio
+    procNode = ctx.createScriptProcessor(2048, 1, 1);
+    sinkGain = ctx.createGain(); 
+    sinkGain.gain.value = 0;
+
+    srcNode.connect(procNode);
+    procNode.connect(sinkGain);
+    sinkGain.connect(ctx.destination);
+
+    procNode.onaudioprocess = (e) => {
+      if (!recording) return;
+      const inL = e.inputBuffer.getChannelData(0);
+      const n   = inL.length;
+
+      const remain = Math.min(n, maxSamples - writeIndex);
+      if (remain > 0) {
+        monoBuffer.set(inL.subarray(0, remain), writeIndex);
+        writeIndex += remain;
+        totalWritten += remain;
+      }
+      if (writeIndex >= maxSamples) stopRecording();
+    };
+
+    render();
+  }
+}
+
+/* ------------------ Radio controls ------------------ */
+async function playRadio(idx = null) {
+  // Ensure audio context is ready first
+  const audioReady = await initAudioContext();
+  if (!audioReady) {
+    showAudioContextAlert();
+    return Promise.reject('Audio context not ready');
+  }
+
+  ensureGraph();
+  if (idx === null) idx = currentIdx;
+  currentIdx = idx;
+
+  const s = STATIONS[currentIdx];
+
+  radioEl.pause();
+  radioEl.src = '';
+  radioEl.load();
+
+  const url = s.url + (s.url.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
+  
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      radioEl.src = url;
+      
+      try {
+        await ctx.resume();
+        await radioEl.play();
+        resolve(true);
+      } catch (error) {
+        console.log('Failed to play station:', s.name, error);
+        showError(`Failed to play ${s.name}. Trying another station...`);
+        
+        // Retry with a different station after a short delay
+        setTimeout(async () => {
+          const newIdx = Math.floor(Math.random() * STATIONS.length);
+          if (newIdx !== currentIdx) {
+            try {
+              await playRadio(newIdx);
+              resolve(true);
+            } catch (retryError) {
+              showError('Unable to connect to any radio station. Check your internet connection.');
+              reject(retryError);
+            }
+          } else {
+            showError('Unable to connect to radio station. Check your internet connection.');
+            reject(error);
+          }
+        }, 1000);
+      }
+    }, 120);
+  });
+}
+
+async function toggleRadio() {
+  // First ensure audio context is initialized
+  const audioReady = await initAudioContext();
+  if (!audioReady) {
+    showAudioContextAlert();
+    return;
+  }
+
+  if (radioPlaying) {
+    // Mute the radio
+    radioEl.volume = 0;
+    radioPlaying = false;
+    btnToggleRadio.textContent = 'Start Radio';
+    btnToggleRadio.className = 'btn btn-secondary flex-1 sm:w-32 py-2 text-sm';
+  } else {
+    // Unmute the radio
+    if (radioEl.src) {
+      // If we have a station loaded, just unmute it
+      radioEl.volume = 1;
+      radioPlaying = true;
+      btnToggleRadio.textContent = 'Mute Radio';
+      btnToggleRadio.className = 'btn btn-primary flex-1 sm:w-32 py-2 text-sm';
+    } else {
+      // If no station is loaded, start a random one
+      await playRandomStation();
+      radioPlaying = true;
+      btnToggleRadio.textContent = 'Mute Radio';
+      btnToggleRadio.className = 'btn btn-primary flex-1 sm:w-32 py-2 text-sm';
+    }
+  }
+}
+
+function stopRadio(){ 
+  radioEl.volume = 0;
+  radioPlaying = false;
+  btnToggleRadio.textContent = 'Start Radio';
+  btnToggleRadio.className = 'btn btn-secondary flex-1 sm:w-32 py-2 text-sm';
+}
+
+/* ------------------ Recording ------------------ */
+async function toggleRecording() {
+  // First ensure audio context is initialized
+  const audioReady = await initAudioContext();
+  if (!audioReady) {
+    showAudioContextAlert();
+    return;
+  }
+
+  if (recording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording() {
+  ensureGraph();
+  if (recording) return;
+  recording = true;
+  writeIndex = 0;
+  totalWritten = 0;
+  recStatus.textContent = 'recording…';
+  recStatus.className = 'status-indicator status-recording px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  elapsedEl.textContent = '0.00s';
+  btnToggleRec.textContent = 'Stop Recording';
+  btnToggleRec.className = 'btn btn-secondary w-full sm:w-32 py-2 text-sm';
+  // Reset loop visuals for fresh take
+  loopBuffer = null;
+  startNorm = 0; endNorm = 1;
+}
+
+function stopRecording() {
+  if (!recording) return;
+  recording = false;
+  
+  // Keep radio playing when recording stops (don't stop it)
+  
+  const len = Math.min(totalWritten, maxSamples);
+  if (len <= 0) { 
+    recStatus.textContent = 'idle';
+    recStatus.className = 'status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm';
+    btnToggleRec.textContent = 'Start Recording';
+    btnToggleRec.className = 'btn btn-primary w-full sm:w-32 py-2 text-sm';
+    return; 
+  }
+
+  // Build finalized AudioBuffer (mono)
+  loopBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+  loopBuffer.getChannelData(0).set(monoBuffer.subarray(0, len));
+  loopStatus.textContent = `ready • ${(len/ctx.sampleRate).toFixed(2)}s`;
+  loopStatus.className = 'status-indicator status-active px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  recStatus.textContent = 'idle';
+  recStatus.className = 'status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  btnToggleRec.textContent = 'Start Recording';
+  btnToggleRec.className = 'btn btn-primary w-full sm:w-32 py-2 text-sm';
+  startNorm = 0; endNorm = 1;
+}
+
+/* ------------------ Loop playback ------------------ */
+function toggleLoop() {
+  if (loopPlaying) {
+    stopLoop();
+  } else {
+    playLoop();
+  }
+}
+
+function playLoop() {
+  if (!loopBuffer) return;
+  
+  // Stop sequencer if it's playing
+  if (sequencerPlaying) {
+    stopSequencer();
+  }
+  
+  stopLoop();
+
+  // Automatically mute radio when looper starts
+  if (radioPlaying) {
+    radioEl.volume = 0;
+  }
+
+  loopSource = ctx.createBufferSource();
+  loopSource.buffer = loopBuffer;
+  loopSource.connect(ctx.destination);
+
+  const rate = parseFloat(speed.value);
+  loopSource.playbackRate.value = rate;
+
+  if (loopModeOn) {
+    const startSec = startNorm * loopBuffer.duration;
+    const endSec   = endNorm   * loopBuffer.duration;
+    loopSource.loop = true;
+    loopSource.loopStart = startSec;
+    loopSource.loopEnd   = endSec;
+    loopOffset = startSec;
+    loopSource.start(0, startSec);
+  } else {
+    loopSource.loop = false;
+    loopOffset = 0;
+    loopSource.start(0, 0);
+  }
+
+  loopStartTime = ctx.currentTime;
+  loopPlaying = true;
+  loopStatus.textContent = 'playing';
+  loopStatus.className = 'status-indicator status-playing px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  btnToggleLoop.textContent = 'Pause';
+  btnToggleLoop.className = 'btn btn-primary py-2 text-sm';
+}
+
+function stopLoop() {
+  if (loopSource) {
+    try{ loopSource.stop(); }catch{}
+    try{ loopSource.disconnect(); }catch{}
+    loopSource = null;
+  }
+  loopPlaying = false;
+  btnToggleLoop.textContent = 'Play';
+  btnToggleLoop.className = 'btn btn-secondary py-2 text-sm';
+  if (loopBuffer) {
+    loopStatus.textContent = 'ready';
+    loopStatus.className = 'status-indicator status-active px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  } else {
+    loopStatus.textContent = 'empty';
+    loopStatus.className = 'status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  }
+}
+
+function clearLoop() {
+  stopLoop();
+  loopBuffer = null;
+  loopStatus.textContent = 'empty';
+  loopStatus.className = 'status-indicator status-idle px-2 sm:px-3 py-1 text-xs sm:text-sm';
+  btnToggleLoop.textContent = 'Play';
+  btnToggleLoop.className = 'btn btn-secondary py-2 text-sm';
+  startNorm = 0; endNorm = 1;
+}
+
+/* ------------------ Step Sequencer Functions ------------------ */
+function createStepGrid() {
+  stepGrid.innerHTML = '';
+  stepGrid.className = `grid gap-3 grid-cols-${sequencerSteps}`;
+  
+  for (let i = 0; i < sequencerSteps; i++) {
+    const step = document.createElement('div');
+    step.className = 'step-item w-12 h-12 sm:w-12 sm:h-12 cursor-pointer relative flex items-center justify-center';
+    step.dataset.step = i;
+    
+    // Add step number indicator
+    const stepNumber = document.createElement('div');
+    stepNumber.className = 'absolute -top-3 -left-2 text-xs text-gray-400 font-medium';
+    stepNumber.textContent = i + 1;
+    step.appendChild(stepNumber);
+    
+    // Initialize pattern if needed
+    if (!sequencerPattern[i]) {
+      sequencerPattern[i] = {
+        active: false,
+        startPos: Math.random(),
+        length: parseFloat(stepLengthSlider.value)
+      };
+    }
+    
+    step.addEventListener('click', () => toggleStep(i));
+    step.addEventListener('mousedown', (e) => startStepDrag(e, i));
+    
+    // Add touch event support for mobile
+    step.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startStepDrag(e, i);
+    }, { passive: false });
+    
+    stepGrid.appendChild(step);
+  }
+  updateStepDisplay();
+  updateStepInfo();
+}
+
+function toggleStep(stepIndex) {
+  if (sequencerPattern[stepIndex]) {
+    sequencerPattern[stepIndex].active = !sequencerPattern[stepIndex].active;
+    updateStepDisplay();
+  }
+}
+
+let isDragging = false;
+
+function startStepDrag(e, stepIndex) {
+  if (!loopBuffer) return;
+  
+  isDragging = false;
+  let startX = e.clientX || (e.touches && e.touches[0].clientX) || e.pageX;
+  let startPos = sequencerPattern[stepIndex].startPos;
+  
+  function onDrag(e) {
+    if (!isDragging) {
+      isDragging = true;
+      document.body.style.cursor = 'ew-resize';
+    }
+    
+    const currentX = e.clientX || (e.touches && e.touches[0].clientX) || e.pageX;
+    const deltaX = currentX - startX;
+    const newPos = Math.max(0, Math.min(1, startPos + deltaX / 200));
+    sequencerPattern[stepIndex].startPos = newPos;
+    
+    // Update sequencer playhead to show the current drag position
+    if (sequencerPlaying) {
+      sequencerPlayheadPos = newPos;
+    }
+    
+    updateStepDisplay();
+  }
+  
+  function onEnd() {
+    isDragging = false;
+    document.body.style.cursor = 'default';
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('touchend', onEnd);
+  }
+  
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchmove', onDrag, { passive: false });
+  document.addEventListener('touchend', onEnd);
+}
+
+function updateStepDisplay() {
+  const steps = stepGrid.querySelectorAll('[data-step]');
+  steps.forEach((step, i) => {
+    if (sequencerPattern[i]) {
+      let className = 'step-item w-12 h-12 sm:w-12 sm:h-12 cursor-pointer relative flex items-center justify-center';
+      
+      if (sequencerPattern[i].active) {
+        className += ' active';
+        if (i === currentStep && sequencerPlaying) {
+          className += ' playing';
+        }
+      }
+      
+      step.className = className;
+      
+      // Ensure step number is preserved
+      if (!step.querySelector('.absolute')) {
+        const stepNumber = document.createElement('div');
+        stepNumber.className = 'absolute -top-3 -left-2 text-xs text-gray-400 font-medium';
+        stepNumber.textContent = i + 1;
+        step.appendChild(stepNumber);
+      }
+    }
+  });
+  updateStepInfo();
+}
+
+function updateStepInfo() {
+  const activeSteps = sequencerPattern.filter(step => step.active).length;
+  activeStepCount.textContent = activeSteps;
+  
+  const totalLength = sequencerPattern.reduce((total, step) => {
+    return total + (step.active ? step.length : 0);
+  }, 0);
+  patternLength.textContent = totalLength.toFixed(2) + 's';
+}
+
+function startSequencer() {
+  if (!loopBuffer || sequencerPlaying) return;
+  
+  // Stop loop if it's playing
+  if (loopSource) {
+    stopLoop();
+  }
+  
+  ensureCtx();
+  sequencerPlaying = true;
+  btnToggleSequencer.textContent = 'Pause';
+  btnToggleSequencer.className = 'btn btn-primary flex-1 sm:w-20 py-2 text-sm font-medium';
+  
+  // Automatically mute radio when sequencer starts
+  if (radioPlaying) {
+    radioEl.volume = 0;
+  }
+  
+  const stepTime = (60 / sequencerBPM) / 4; // 16th notes
+  currentStep = 0;
+  
+  sequencerInterval = setInterval(() => {
+    if (sequencerPattern[currentStep] && sequencerPattern[currentStep].active) {
+      playStep(currentStep);
+    }
+    
+    currentStep = (currentStep + 1) % sequencerSteps;
+    updateStepDisplay();
+  }, stepTime * 1000);
+}
+
+function stopSequencer() {
+  sequencerPlaying = false;
+  btnToggleSequencer.textContent = 'Play';
+  btnToggleSequencer.className = 'btn btn-secondary flex-1 sm:w-20 py-2 text-sm font-medium';
+  
+  if (sequencerInterval) {
+    clearInterval(sequencerInterval);
+    sequencerInterval = null;
+  }
+  
+  // Stop all active sources
+  sequencerSources.forEach(source => {
+    try { source.stop(); } catch {}
+    try { source.disconnect(); } catch {}
+  });
+  sequencerSources = [];
+  
+  currentStep = 0;
+  sequencerPlayheadPos = 0; // Reset playhead position
+  updateStepDisplay();
+}
+
+function playStep(stepIndex) {
+  if (!loopBuffer || !sequencerPattern[stepIndex]) return;
+  
+  const step = sequencerPattern[stepIndex];
+  const startSample = Math.floor(step.startPos * loopBuffer.length);
+  const lengthSamples = Math.floor(step.length * ctx.sampleRate);
+  const endSample = Math.min(startSample + lengthSamples, loopBuffer.length);
+  
+  // Create a new buffer for this chunk
+  const chunkBuffer = ctx.createBuffer(1, endSample - startSample, ctx.sampleRate);
+  const originalData = loopBuffer.getChannelData(0);
+  const chunkData = chunkBuffer.getChannelData(0);
+  
+  for (let i = 0; i < chunkData.length; i++) {
+    chunkData[i] = originalData[startSample + i] || 0;
+  }
+  
+  // Play the chunk with varispeed
+  const source = ctx.createBufferSource();
+  source.buffer = chunkBuffer;
+  source.connect(ctx.destination);
+  
+  // Apply varispeed from the speed slider
+  const varispeed = parseFloat(speed.value);
+  source.playbackRate.value = varispeed;
+  
+  source.start();
+  
+  // Track for cleanup
+  sequencerSources.push(source);
+  source.onended = () => {
+    const index = sequencerSources.indexOf(source);
+    if (index > -1) {
+      sequencerSources.splice(index, 1);
+    }
+  };
+}
+
+function randomizeSteps() {
+  for (let i = 0; i < sequencerSteps; i++) {
+    sequencerPattern[i] = {
+      active: Math.random() > 0.5,
+      startPos: Math.random(),
+      length: 0.05 + Math.random() * 0.3  // 0.05-0.35 seconds
+    };
+  }
+  updateStepDisplay();
+}
+
+function clearSteps() {
+  for (let i = 0; i < sequencerSteps; i++) {
+    sequencerPattern[i] = {
+      active: false,
+      startPos: 0,
+      length: parseFloat(stepLengthSlider.value)
+    };
+  }
+  updateStepDisplay();
+}
+
+// Enhanced sequencer functions
+function fillAllSteps() {
+  for (let i = 0; i < sequencerSteps; i++) {
+    sequencerPattern[i] = {
+      active: true,
+      startPos: Math.random(),
+      length: parseFloat(stepLengthSlider.value)
+    };
+  }
+  updateStepDisplay();
+}
+
+function invertSteps() {
+  for (let i = 0; i < sequencerSteps; i++) {
+    if (sequencerPattern[i]) {
+      sequencerPattern[i].active = !sequencerPattern[i].active;
+    }
+  }
+  updateStepDisplay();
+}
+
+function tapTempo() {
+  const now = Date.now();
+  tapTimes.push(now);
+  
+  // Keep only last 4 taps
+  if (tapTimes.length > 4) {
+    tapTimes.shift();
+  }
+  
+  // Calculate BPM from tap intervals
+  if (tapTimes.length >= 2) {
+    const intervals = [];
+    for (let i = 1; i < tapTimes.length; i++) {
+      intervals.push(tapTimes[i] - tapTimes[i-1]);
+    }
+    
+    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+    const newBPM = Math.round(60000 / avgInterval);
+    
+    // Constrain to valid range
+    const constrainedBPM = Math.max(60, Math.min(200, newBPM));
+    sequencerBPM = constrainedBPM;
+    bpmSlider.value = constrainedBPM;
+    bpmVal.textContent = constrainedBPM;
+    
+    // Update sequencer if playing
+    if (sequencerPlaying) {
+      stopSequencer();
+      startSequencer();
+    }
+  }
+  
+  // Visual feedback
+  btnTapTempo.style.transform = 'scale(0.95)';
+  setTimeout(() => {
+    btnTapTempo.style.transform = 'scale(1)';
+  }, 100);
+}
+
+function loadPresetPolyrhythm() {
+  for (let i = 0; i < sequencerSteps; i++) {
+    sequencerPattern[i] = {
+      active: i % 3 === 0, // 3 against 4 polyrhythm
+      startPos: Math.random(),
+      length: parseFloat(stepLengthSlider.value)
+    };
+  }
+  updateStepDisplay();
+}
+
+async function playRandomStation() {
+  // Ensure audio context is ready
+  const audioReady = await initAudioContext();
+  if (!audioReady) {
+    showAudioContextAlert();
+    return;
+  }
+
+  const randomIdx = Math.floor(Math.random() * STATIONS.length);
+  await playRadio(randomIdx);
+  radioEl.volume = 1; // Ensure volume is set to 1 when starting a new station
+}
+
+/* ------------------ UI wiring ------------------ */
+btnToggleRadio.addEventListener('click', toggleRadio);
+btnRandom    .addEventListener('click', playRandomStation);
+
+btnToggleRec.addEventListener('click', toggleRecording);
+btnToggleLoop.addEventListener('click', async ()=>{ 
+  const audioReady = await initAudioContext();
+  if (audioReady) toggleLoop(); 
+});
+btnClear   .addEventListener('click', clearLoop);
+
+let loopBtnState = false;
+btnToggleLoopMode.addEventListener('click', ()=>{
+  loopModeOn = !loopModeOn;
+  btnToggleLoopMode.textContent = 'Loop: ' + (loopModeOn ? 'On' : 'Off');
+  btnToggleLoopMode.className = loopModeOn ? 'btn btn-active px-6 py-3' : 'btn btn-primary px-6 py-3';
+  // If already playing, restart to apply loopStart/loopEnd reliably
+  if (loopSource) playLoop();
+});
+
+speed.addEventListener('input', ()=>{
+  const r = parseFloat(speed.value);
+  speedVal.textContent = r.toFixed(2) + '×';
+  if (loopSource) loopSource.playbackRate.value = r;
+  
+  // Update step sequencer if playing
+  if (sequencerPlaying) {
+    stopSequencer();
+    startSequencer();
+  }
+});
+
+// Step Sequencer Event Listeners
+btnToggleSequencer.addEventListener('click', async () => {
+  const audioReady = await initAudioContext();
+  if (!audioReady) {
+    showAudioContextAlert();
+    return;
+  }
+
+  if (sequencerPlaying) {
+    stopSequencer();
+  } else {
+    startSequencer();
+  }
+});
+
+btnRandomizeSteps.addEventListener('click', randomizeSteps);
+btnClearSteps.addEventListener('click', clearSteps);
+btnFillSteps.addEventListener('click', fillAllSteps);
+btnInvertSteps.addEventListener('click', invertSteps);
+btnTapTempo.addEventListener('click', tapTempo);
+
+// Pattern preset listeners
+btnPresetPolyrhythm.addEventListener('click', loadPresetPolyrhythm);
+
+stepSlider.addEventListener('input', () => {
+  sequencerSteps = parseInt(stepSlider.value);
+  stepCount.textContent = sequencerSteps;
+  const stepCountDisplay = document.getElementById('stepCountDisplay');
+  if (stepCountDisplay) stepCountDisplay.textContent = sequencerSteps;
+  createStepGrid();
+});
+
+bpmSlider.addEventListener('input', () => {
+  sequencerBPM = parseInt(bpmSlider.value);
+  bpmVal.textContent = sequencerBPM;
+  const bpmDisplay = document.getElementById('bpmDisplay');
+  if (bpmDisplay) bpmDisplay.textContent = sequencerBPM;
+  if (sequencerPlaying) {
+    stopSequencer();
+    startSequencer();
+  }
+});
+
+stepLengthSlider.addEventListener('input', () => {
+  const length = parseFloat(stepLengthSlider.value);
+  stepLengthVal.textContent = length.toFixed(2) + 's';
+  const stepLengthDisplay = document.getElementById('stepLengthDisplay');
+  if (stepLengthDisplay) stepLengthDisplay.textContent = length.toFixed(2) + 's';
+  
+  // Update all existing steps with new length
+  for (let i = 0; i < sequencerPattern.length; i++) {
+    if (sequencerPattern[i]) {
+      sequencerPattern[i].length = length;
+    }
+  }
+  updateStepInfo();
+});
+
+/* ------------------ Level + Drawing ------------------ */
+function drawLevel() {
+  if (!analyser) return;
+  const td = new Uint8Array(analyser.fftSize);
+  analyser.getByteTimeDomainData(td);
+  let peak = 0;
+  for (let i=0;i<td.length;i++){
+    const v = Math.abs((td[i]-128)/128);
+    if (v>peak) peak=v;
+  }
+  levelEl.style.width = Math.min(100, Math.round(peak*100)) + '%';
+}
+
+function render() {
+  const W = waveCanvas.width, H = waveCanvas.height;
+  wctx.clearRect(0,0,W,H);
+  wctx.fillStyle = '#0b0c10';
+  wctx.fillRect(0,0,W,H);
+
+  // Recording waveform (live)
+  if (recording) {
+    const len = writeIndex;
+    const step = Math.max(1, Math.floor(len / W));
+    wctx.strokeStyle = '#ffffff'; // white
+    wctx.lineWidth = 2;
+    wctx.beginPath();
+    for (let x=0; x<W; x++){
+      const i = Math.min(len-1, x*step);
+      const s = monoBuffer[i] || 0;
+      const y = H/2 - s*(H*0.45);
+      x===0 ? wctx.moveTo(x,y) : wctx.lineTo(x,y);
+    }
+    wctx.stroke();
+
+    // Show recording playhead (current recording position)
+    const currentPos = len / (ctx?.sampleRate || 48000);
+    const maxTime = maxSeconds;
+    const playheadX = Math.floor((currentPos / maxTime) * W);
+    wctx.strokeStyle = '#ffffff';
+    wctx.lineWidth = 2;
+    wctx.beginPath();
+    wctx.moveTo(playheadX, 0);
+    wctx.lineTo(playheadX, H);
+    wctx.stroke();
+
+    const elapsed = len / (ctx?.sampleRate || 48000);
+    elapsedEl.textContent = elapsed.toFixed(2) + 's';
+  }
+
+  // Finalized loop buffer waveform
+  if (!recording && loopBuffer) {
+    const data = loopBuffer.getChannelData(0);
+    const totalLen = data.length;
+    const step = Math.max(1, Math.floor(totalLen / W));
+    wctx.strokeStyle = '#cccccc'; // gray
+    wctx.lineWidth = 2;
+    wctx.beginPath();
+    for (let x=0; x<W; x++){
+      const i = x*step;
+      const s = data[i] || 0;
+      const y = H/2 - s*(H*0.45);
+      x===0 ? wctx.moveTo(x,y) : wctx.lineTo(x,y);
+    }
+    wctx.stroke();
+
+    // shaded loop selection (always visible to edit)
+    const selX0 = Math.floor(startNorm * W);
+    const selX1 = Math.floor(endNorm   * W);
+    wctx.fillStyle = 'rgba(255,255,255,0.12)'; // white tint
+    wctx.fillRect(selX0, 0, Math.max(2, selX1 - selX0), H);
+
+    // markers
+    drawMarker(selX0, '#ffffff'); // white start
+    drawMarker(selX1, '#999999'); // gray end
+
+    // playhead
+    if (sequencerPlaying) {
+      // Show sequencer playhead at the current step's random start position
+      if (sequencerPattern[currentStep] && sequencerPattern[currentStep].active) {
+        const x = Math.floor(sequencerPattern[currentStep].startPos * W);
+        wctx.strokeStyle = '#007AFF'; // Apple blue for sequencer
+        wctx.lineWidth = 3;
+        wctx.beginPath();
+        wctx.moveTo(x,0);
+        wctx.lineTo(x,H);
+        wctx.stroke();
+      }
+    } else if (loopSource) {
+      // Show loop playhead
+      const rate = loopSource.playbackRate.value || 1;
+      let posSec;
+      if (loopModeOn) {
+        const startSec = startNorm * loopBuffer.duration;
+        const endSec   = endNorm   * loopBuffer.duration;
+        const loopDur  = Math.max(0.001, endSec - startSec);
+        posSec = startSec + (((ctx.currentTime - loopStartTime) * rate) % loopDur);
+      } else {
+        const advance = (ctx.currentTime - loopStartTime) * rate;
+        posSec = Math.min(loopBuffer.duration, loopOffset + advance);
+      }
+      const x = Math.floor((posSec / loopBuffer.duration) * W);
+      wctx.strokeStyle = '#ffffff';
+      wctx.lineWidth = 2;
+      wctx.beginPath();
+      wctx.moveTo(x,0);
+      wctx.lineTo(x,H);
+      wctx.stroke();
+    }
+  }
+
+  drawLevel();
+  requestAnimationFrame(render);
+}
+
+function drawMarker(x, color) {
+  const H = waveCanvas.height;
+  wctx.strokeStyle = color;
+  wctx.lineWidth = 2 * devicePixelRatio;
+  wctx.beginPath();
+  wctx.moveTo(x, 0);
+  wctx.lineTo(x, H);
+  wctx.stroke();
+  // handle
+  wctx.fillStyle = color;
+  wctx.beginPath();
+  wctx.arc(x, H - 12*devicePixelRatio, 5*devicePixelRatio, 0, Math.PI*2);
+  wctx.fill();
+}
+
+/* ------------------ Marker dragging ------------------ */
+let dragging = null; // 'start' | 'end' | null
+function pxToNorm(px){ return Math.min(1, Math.max(0, px / waveCanvas.width)); }
+
+function handlePointerDown(e) {
+  if (!loopBuffer) return;
+  const rect = waveCanvas.getBoundingClientRect();
+  const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+  const x = (clientX - rect.left) * devicePixelRatio;
+  const startX = startNorm * waveCanvas.width;
+  const endX   = endNorm   * waveCanvas.width;
+  const distStart = Math.abs(x - startX);
+  const distEnd   = Math.abs(x - endX);
+  dragging = distStart <= distEnd ? 'start' : 'end';
+  onDrag(x);
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+  }
+}
+
+function handlePointerMove(e) {
+  if (!dragging || !loopBuffer) return;
+  const rect = waveCanvas.getBoundingClientRect();
+  const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+  const x = (clientX - rect.left) * devicePixelRatio;
+  onDrag(x);
+  if (e.type === 'touchmove') {
+    e.preventDefault();
+  }
+}
+
+function handlePointerEnd() {
+  dragging = null;
+}
+
+// Mouse events
+waveCanvas.addEventListener('mousedown', handlePointerDown);
+window.addEventListener('mousemove', handlePointerMove);
+window.addEventListener('mouseup', handlePointerEnd);
+window.addEventListener('mouseleave', handlePointerEnd);
+
+// Touch events
+waveCanvas.addEventListener('touchstart', handlePointerDown, { passive: false });
+window.addEventListener('touchmove', handlePointerMove, { passive: false });
+window.addEventListener('touchend', handlePointerEnd);
+window.addEventListener('touchcancel', handlePointerEnd);
+
+function onDrag(xPx){
+  const n = pxToNorm(xPx);
+  if (dragging === 'start') {
+    startNorm = Math.min(n, endNorm - MIN_GAP);
+  } else if (dragging === 'end') {
+    endNorm = Math.max(n, startNorm + MIN_GAP);
+  }
+  // If playing in loop mode, restart to apply new boundaries accurately
+  if (loopSource && loopModeOn) {
+    playLoop();
+  }
+}
+
+/* ------------------ Boot ------------------ */
+function init(){
+  speedVal.textContent = parseFloat(speed.value).toFixed(2) + '×';
+  createStepGrid();
+  render();
+  
+  // Show audio context alert on mobile initially
+  if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    showAudioContextAlert();
+  }
+  
+  // Add universal button handler for audio context initialization
+  document.addEventListener('click', async (e) => {
+    if (e.target.matches('button, .btn')) {
+      await initAudioContext();
+    }
+  });
+  
+  // Add touch event support for mobile
+  document.addEventListener('touchstart', async (e) => {
+    if (e.target.matches('button, .btn')) {
+      await initAudioContext();
+    }
+  });
+  
+  // Error dismiss button handler
+  const dismissButton = document.getElementById('dismissError');
+  if (dismissButton) {
+    dismissButton.addEventListener('click', hideError);
+  }
+}
+init();
+
+/* ------------------ Events wired above ------------------ */
+</script>
+</body>
+</html>
+
